@@ -1,8 +1,9 @@
-import { initialTickets } from "@/data";
-import { Ticket } from "../ticket/types";
+import prisma from "@/lib/prisma";
 
-export const getTickets = async (): Promise<Ticket[]> => {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-
-  return initialTickets;
+export const getTickets = async () => {
+  return await prisma.ticket.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 };
