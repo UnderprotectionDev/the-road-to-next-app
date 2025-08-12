@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 import * as React from "react";
-import { useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -12,17 +12,33 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+export type ImperativeHandleFromDatePicker = {
+  reset: () => void;
+};
+
 type DatePickerProps = {
   id: string;
   name: string;
   defaultValue?: string | undefined;
+  imperativeHandleRef?: React.RefObject<ImperativeHandleFromDatePicker>;
 };
 
-export const DatePicker = ({ id, name, defaultValue }: DatePickerProps) => {
+export const DatePicker = ({
+  id,
+  name,
+  defaultValue,
+  imperativeHandleRef,
+}: DatePickerProps) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(
     defaultValue ? new Date(defaultValue) : new Date()
   );
+
+  useImperativeHandle(imperativeHandleRef, () => ({
+    reset: () => {
+      setDate(new Date());
+    },
+  }));
 
   const formattedStringDate = date ? format(date, "yyyy-MM-dd") : "";
 
